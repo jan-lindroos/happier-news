@@ -27,6 +27,8 @@ export async function analyseFeed(container: HTMLElement): Promise<void> {
   for (let headline of headlines) {
     const negativityScore = await getNegativityScore(headline);
 
+    if (!negativityScore) return;
+
     if (negativityScore >= 0.65) {
       blurHeadline(headline);
     } else {
@@ -42,15 +44,20 @@ export async function analyseFeed(container: HTMLElement): Promise<void> {
  * @param {Headline} headline - The headline object for which the negativity score is required.
  * @return {Promise<number>} A promise resolving to the negativity score of the given headline.
  */
-async function getNegativityScore(headline: Headline): Promise<number> {
+async function getNegativityScore(headline: Headline): Promise<number | null> {
   if (!scoreCache.has(headline.title)) {
     const headlineInferenceRequest = {
-      type: "INFERENCE",
+      type: "GET_SCORE",
       headline
     };
 
-    const response: Message<number> = await chrome.runtime.sendMessage(headlineInferenceRequest);
-    scoreCache.set(headline.title, response.content);
+    try {
+      const response: Message<number> = await chrome.runtime.sendMessage(headlineInferenceRequest);
+      scoreCache.set(headline.title, response.content);
+    }
+    catch (_) {
+      return null;
+    }
   }
 
   return scoreCache.get(headline.title)!
