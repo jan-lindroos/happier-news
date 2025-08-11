@@ -1,0 +1,26 @@
+{
+  "name": "Happier (news)",
+  "description": "Makes your news feed happier (and hopefully you) by making negative news less visible.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": ["offscreen"],
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["inference/inference.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
