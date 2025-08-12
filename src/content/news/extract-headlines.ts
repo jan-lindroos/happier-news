@@ -1,7 +1,7 @@
 import { createHeadline, type Headline } from "../content.types";
 
 const MIN_WORD_COUNT = 4;
-const MAX_WORD_COUNT = 30;
+const MAX_WORD_COUNT = 18;
 
 /**
  * Determines whether a given text node should be included based on its content.
