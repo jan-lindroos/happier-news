@@ -1,6 +1,6 @@
 import type { Message } from "./content/content.types.ts";
 
-chrome.runtime?.onMessage.addListener((message, _, sendResponse) => {
+chrome.runtime?.onMessage.addListener((message: Message<string>, _, sendResponse) => {
   if (message?.type === 'GET_SCORE') {
     (async () => {
       try {
@@ -8,7 +8,7 @@ chrome.runtime?.onMessage.addListener((message, _, sendResponse) => {
 
         const inferenceRequest: Message<string> = {
           type: 'INFERENCE',
-          content: message.headline.title,
+          content: message.content,
         };
 
         const response: Message<number> = await chrome.runtime.sendMessage(inferenceRequest);

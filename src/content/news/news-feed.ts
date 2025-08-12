@@ -46,9 +46,9 @@ export async function analyseFeed(container: HTMLElement): Promise<void> {
  */
 async function getNegativityScore(headline: Headline): Promise<number | null> {
   if (!scoreCache.has(headline.title)) {
-    const headlineInferenceRequest = {
+    const headlineInferenceRequest: Message<string> = {
       type: "GET_SCORE",
-      headline
+      content: headline.title
     };
 
     try {
