@@ -1,0 +1,8 @@
+torch~=2.8.0
+transformers~=4.53.1
+datasets~=3.6.0
+scikit-learn~=1.7.1
+optimum~=1.27.0
+pandas~=2.3.0
+python-dotenv~=1.1.1
+gradio~=5.42.0
