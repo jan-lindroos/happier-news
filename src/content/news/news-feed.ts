@@ -12,8 +12,6 @@ export function isNewsFeed(href: string): boolean {
   return href !== '';
 }
 
-let scoreCache = new Map<string, number>();
-
 /**
  * Analyses the headlines within a specified container element to determine their negativity score.
  * Headlines with a negativity score exceeding the threshold are blurred, while others are unblurred.
@@ -29,13 +27,15 @@ export async function analyseFeed(container: HTMLElement): Promise<void> {
 
     if (!negativityScore) return;
 
-    if (negativityScore >= 0.65) {
+    if (negativityScore >= 0.7) {
       blurHeadline(headline);
     } else {
       unblurHeadline(headline);
     }
   }
 }
+
+let scoreCache = new Map<string, number | null>();
 
 /**
  * Calculates and retrieves the negativity score for a given headline. If the score is not already
@@ -46,6 +46,9 @@ export async function analyseFeed(container: HTMLElement): Promise<void> {
  */
 async function getNegativityScore(headline: Headline): Promise<number | null> {
   if (!scoreCache.has(headline.title)) {
+    // Prevent inference being started multiple times while waiting on result.
+    scoreCache.set(headline.title, null);
+
     const headlineInferenceRequest: Message<string> = {
       type: "GET_SCORE",
       content: headline.title
