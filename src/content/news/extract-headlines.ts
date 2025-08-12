@@ -4,8 +4,7 @@ const MIN_WORD_COUNT = 4;
 const MAX_WORD_COUNT = 30;
 
 /**
- * Determines whether a given text node should be included based on its content
- * and its parent's content, as well as specific word count boundaries.
+ * Determines whether a given text node should be included based on its content.
  *
  * @param {Text} node - The text node to be evaluated.
  * @return {boolean} Whether the text node meets the inclusion criteria.
@@ -13,13 +12,6 @@ const MAX_WORD_COUNT = 30;
 function shouldIncludeNode(node: Text): boolean {
   let text = node.textContent?.trim() ?? '';
   if (text === '') return false;
-
-  // Check if the element's parent provides more text, e.g. a <span> tag inside <h3>.
-  const parent = node.parentElement?.parentElement;
-  if (parent) {
-    const parentText = parent.textContent?.trim() ?? '';
-    if (parentText.length > text.length) return false;
-  }
 
   const wordCount = text.split(/\s+/).length;
   return wordCount >= MIN_WORD_COUNT && wordCount <= MAX_WORD_COUNT;
