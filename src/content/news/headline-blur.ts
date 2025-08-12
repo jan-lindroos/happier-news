@@ -2,13 +2,24 @@ import '../style/headline-blur.css';
 import type { Headline } from "../content.types";
 
 let colourCache = new Map<string, string>();
+let rafScheduled = false;
 
-/**
- * Applies a blur effect to the given headline element by caching its computed colour
- * and setting a CSS custom property, then adding a CSS class to apply styling.
- *
- * @param {Headline} headline - An object containing the headline data.
- */
+window.addEventListener('mousemove', (e) => {
+  if (!rafScheduled) {
+    rafScheduled = true;
+    requestAnimationFrame(() => {
+      rafScheduled = false;
+
+      document.querySelectorAll('.headline-blur[unblur]')
+        .forEach(element => element.removeAttribute('unblur'));
+
+      document.elementsFromPoint(e.clientX, e.clientY)
+        .filter(element => element.classList?.contains('headline-blur'))
+        .forEach(element => element.setAttribute('unblur', ''));
+    });
+  }
+}, { passive: true });
+
 export function blurHeadline(headline: Headline) {
   if (!colourCache.has(headline.title)) {
     const colour = getComputedStyle(headline.element).color;
@@ -19,12 +30,6 @@ export function blurHeadline(headline: Headline) {
   headline.element.classList.add('headline-blur');
 }
 
-/**
- * Removes the headline-blur class from the provided headline's HTML element
- * to unblur the visual representation of the headline.
- *
- * @param {Headline} headline - An object containing the headline data.
- */
 export function unblurHeadline(headline: Headline) {
   headline.element.classList.remove('headline-blur');
 }

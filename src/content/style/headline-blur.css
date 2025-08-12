@@ -2,16 +2,16 @@
     --colour: black;
     --blur-radius: 8px;
 
-    color: var(--colour);
-    transition: color .25s ease, text-shadow .25s ease;
+    overflow: visible;
+    transition: color 0.1s ease, text-shadow 0.1s ease;
 }
 
-.headline-blur:not(:hover) {
-    color: transparent;
+.headline-blur:not([unblur]) {
+    color: transparent !important;
     text-shadow: 0 0 var(--blur-radius) var(--colour, black);
 }
 
-.headline-blur:hover {
+.headline-blur[unblur] {
     color: var(--colour, black);
     text-shadow: none;
 }

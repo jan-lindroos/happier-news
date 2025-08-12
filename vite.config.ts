@@ -14,6 +14,7 @@ export default defineConfig({
         inference: resolve(__dirname, 'src/inference/inference.html'),
         background: resolve(__dirname, 'src/background.ts'),
         content: resolve(__dirname, 'src/content/content.ts'),
+        'style/headline-blur': resolve(__dirname, 'src/content/style/headline-blur.css'),
       },
       output: {
         entryFileNames: '[name].js',
