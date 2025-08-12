@@ -2,6 +2,8 @@ import { createHeadline, type Headline } from "../content.types";
 
 const MIN_WORD_COUNT = 4;
 const MAX_WORD_COUNT = 18;
+const MIN_CHARACTER_COUNT = 2;
+const CHARACTERS_PER_WORD = 6.5;
 
 /**
  * Determines whether a given text node should be included based on its content.
@@ -11,10 +13,16 @@ const MAX_WORD_COUNT = 18;
  */
 function shouldIncludeNode(node: Text): boolean {
   let text = node.textContent?.trim() ?? '';
-  if (text === '') return false;
+  if (text === '')
+    return false;
 
   const wordCount = text.split(/\s+/).length;
-  return wordCount >= MIN_WORD_COUNT && wordCount <= MAX_WORD_COUNT;
+  const isInWordCountRange = wordCount >= MIN_WORD_COUNT && wordCount <= MAX_WORD_COUNT;
+
+  const charCount = text.length;
+  const isInCharCountRange = charCount >= MIN_CHARACTER_COUNT && charCount <= MAX_WORD_COUNT * CHARACTERS_PER_WORD;
+
+  return isInWordCountRange && isInCharCountRange;
 }
 
 /**

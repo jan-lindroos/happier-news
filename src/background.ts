@@ -1,10 +1,11 @@
 import type { Message } from "./content/content.types.ts";
 
-chrome.runtime?.onMessage.addListener((message: Message<string>, _, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: Message<string>, _, sendResponse) => {
   if (message?.type === 'GET_SCORE') {
     (async () => {
       try {
         await ensureHasInferenceOffscreen();
+        await waitForOffscreenReady();
 
         const inferenceRequest: Message<string> = {
           type: 'INFERENCE',
@@ -15,23 +16,16 @@ chrome.runtime?.onMessage.addListener((message: Message<string>, _, sendResponse
         sendResponse(response);
       } catch (error) {
         console.error('Inference routing failed:', error);
+        sendResponse({ type: "SCORE", content: NaN } as Message<number>);
       }
     })();
+    return true; // keep the channel open for async sendResponse
   }
-
-  return true;
 });
 
 let ensureOffscreenPromise: Promise<void> | null = null;
+let offscreenReadyPromise: Promise<void> | null = null;
 
-/**
- * Ensures that an offscreen document is available for inference operations. If no offscreen
- * document currently exists, it creates a new offscreen document with the necessary configuration
- * to support persistent inference tasks.
- *
- * @return {Promise<void>} A promise that resolves once the offscreen document is ensured to exist
- * and is properly configured. If the offscreen document already exists, the promise resolves immediately.
- */
 async function ensureHasInferenceOffscreen(): Promise<void> {
   if (ensureOffscreenPromise) return ensureOffscreenPromise;
 
@@ -49,4 +43,36 @@ async function ensureHasInferenceOffscreen(): Promise<void> {
   });
 
   return ensureOffscreenPromise;
+}
+
+async function waitForOffscreenReady(): Promise<void> {
+  if (offscreenReadyPromise) return offscreenReadyPromise;
+
+  offscreenReadyPromise = (async () => {
+    // Try a few quick pings; if they fail, recreate the doc once.
+    const ping = async () => chrome.runtime.sendMessage({ type: 'PING_OFFSCREEN' }).then(() => true).catch(() => false);
+
+    for (let attempt = 0; attempt < 40; attempt++) {
+      if (await ping()) return;
+      await new Promise(r => setTimeout(r, 150));
+    }
+
+    // If we got here, the offscreen likely crashed or never loaded—recreate it.
+    try {
+      await chrome.offscreen.closeDocument?.();
+    } catch {}
+    await ensureHasInferenceOffscreen();
+
+    for (let attempt = 0; attempt < 40; attempt++) {
+      if (await ping()) return;
+      await new Promise(r => setTimeout(r, 150));
+    }
+
+    throw new Error('Offscreen not responding');
+  })().finally(() => {
+    // Keep the promise for reuse only if successful; on failure, allow retry next call
+    // (no-op here; leaving it set is fine too if you prefer)
+  });
+
+  return offscreenReadyPromise;
 }
