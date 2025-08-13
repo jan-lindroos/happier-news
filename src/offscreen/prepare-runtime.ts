@@ -12,9 +12,21 @@ function configureRuntime() {
   env.allowRemoteModels = false;
   env.localModelPath = chrome.runtime.getURL('models/');
 
-  if (env.backends.onnx.wasm) {
-    env.backends.onnx.wasm.wasmPaths = chrome.runtime.getURL('ort/');
+  if (env.backends?.onnx?.wasm) {
+    // Causes issues with blobs due to chrome's security policy.
+    env.backends.onnx.wasm.proxy = false;
     env.backends.onnx.wasm.numThreads = 1;
+
+    env.backends.onnx.wasm.wasmPaths = chrome.runtime.getURL('ort/');
+  }
+
+  const hasWebGPU = typeof navigator !== 'undefined' && 'gpu' in navigator;
+  console.log(hasWebGPU);
+
+  if (hasWebGPU && env.backends.onnx.webgpu) {
+    env.backends.onnx.preferredBackend = 'webgpu';
+  } else if (env.backends.onnx.wasm) {
+    env.backends.onnx.preferredBackend = 'wasm';
   }
 }
 
