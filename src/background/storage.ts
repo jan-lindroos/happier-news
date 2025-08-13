@@ -1,4 +1,4 @@
-import newsDomainsData from '../assets/news-domains.json';
+import newsDomainsData from '../news-domains.json';
 
 const PRELOADED_NEWS_DOMAINS: string[] = newsDomainsData.map(d => d.domain);
 
