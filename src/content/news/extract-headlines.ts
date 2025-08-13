@@ -2,7 +2,7 @@ import { createHeadline, type Headline } from "../content.types";
 
 const MIN_WORD_COUNT = 4;
 const MAX_WORD_COUNT = 18;
-const MIN_CHARACTER_COUNT = 2;
+const MIN_CHARACTER_COUNT = 10;
 const CHARACTERS_PER_WORD = 6.5;
 
 /**
@@ -23,6 +23,15 @@ function shouldIncludeNode(node: Text): boolean {
   const isInCharCountRange = charCount >= MIN_CHARACTER_COUNT && charCount <= MAX_WORD_COUNT * CHARACTERS_PER_WORD;
 
   return isInWordCountRange && isInCharCountRange;
+}
+
+function sortHeadlinesVertically(headlines: Headline[]): Headline[] {
+  return headlines.sort((a, b) => {
+    const ay = a.element.getBoundingClientRect().top;
+    const by = b.element.getBoundingClientRect().top;
+
+    return ay - by;
+  });
 }
 
 /**
@@ -51,5 +60,5 @@ export function extractHeadlines(container: Node): Headline[] {
     headlines.push(createHeadline(currentNode.parentElement));
   }
 
-  return headlines;
+  return sortHeadlinesVertically(headlines);
 }

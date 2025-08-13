@@ -1,0 +1,32 @@
+import newsDomainsData from '../assets/news-domains.json';
+
+const PRELOADED_NEWS_DOMAINS: string[] = newsDomainsData.map(d => d.domain);
+
+export const storage = {
+  set: async <T>(key: string, value: T) => {
+    await chrome.storage.local.set({[key]: value});
+    return;
+  },
+
+  get: async <T>(key: string, defaultValue: T) => {
+    const result = await chrome.storage.local.get([key]);
+    return result[key] ?? defaultValue;
+  },
+
+  add: async <T>(key: string, item: T) => {
+    const list = await storage.get<T[]>(key, []);
+    list.push(item);
+    return storage.set(key, list);
+  }
+};
+
+export async function getNewsDomains() {
+  const storedDomains: string[] = await storage.get<string[]>('NEWS_DOMAINS', []);
+
+  if (storedDomains.length > 0)
+    return storedDomains;
+
+  await storage.set('NEWS_DOMAINS', PRELOADED_NEWS_DOMAINS);
+  return PRELOADED_NEWS_DOMAINS;
+}
+

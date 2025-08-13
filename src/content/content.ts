@@ -1,16 +1,28 @@
-import { analyseFeed, isNewsFeed } from "./news/news-feed";
+import { analyseNewsFeed, isNewsFeed } from "./news/news-feed";
 
 document.addEventListener('DOMContentLoaded', () => onContentUpdate(document.body));
 
 const observer = new MutationObserver((mutations) => {
   mutations.forEach(async (mutation) => {
-    if (mutation.target instanceof HTMLElement) await onContentUpdate(mutation.target);
+    if (mutation.target instanceof HTMLElement)
+      await onContentUpdate(mutation.target);
   });
 });
 
 observer.observe(document.body, {
   childList: true,
   subtree: true
+});
+
+chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
+  if (message.type !== 'REFRESH')
+    return;
+
+  (async () => {
+    await onContentUpdate(document.body);
+    sendResponse();
+  })();
+  return true;
 });
 
 /**
@@ -21,7 +33,9 @@ observer.observe(document.body, {
  */
 async function onContentUpdate(container: HTMLElement) {
   const domain = window.location.hostname;
+  if (!(await isNewsFeed(domain)))
+    return;
 
-  if (!isNewsFeed(domain)) return;
-  await analyseFeed(container);
+  console.log('Is domain.');
+  await analyseNewsFeed(container);
 }
