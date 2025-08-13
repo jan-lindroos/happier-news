@@ -25,16 +25,30 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   return true;
 });
 
-/**
- * Handles updates to the given content container, performing actions
- * specific to a news feed if the current domain qualifies as one.
- *
- * @param {HTMLElement} container - The HTML element containing the updates.
- */
-async function onContentUpdate(container: HTMLElement) {
-  const domain = window.location.hostname;
-  if (!(await isNewsFeed(domain)))
-    return;
+const CONTENT_UPDATE_DELAY = 100;
+let lastContentUpdate = Date.now();
+let updateLock = false;
 
-  await analyseNewsFeed(container);
+async function onContentUpdate(container: HTMLElement) {
+  if (updateLock)
+    return;
+  updateLock = true;
+
+  const elapsedTime = Date.now() - lastContentUpdate;
+  const isCooldownActive = elapsedTime < CONTENT_UPDATE_DELAY;
+  if (isCooldownActive)
+    await new Promise(r => setTimeout(r, CONTENT_UPDATE_DELAY - elapsedTime))
+
+  const domain = window.location.hostname;
+
+  try {
+    if (await isNewsFeed(domain))
+        await analyseNewsFeed(isCooldownActive ? document.body : container);
+
+    lastContentUpdate = Date.now()
+  } catch (error) {
+    console.warn("Encountered following error while analysing feed:", error);
+  } finally {
+    updateLock = false;
+  }
 }
