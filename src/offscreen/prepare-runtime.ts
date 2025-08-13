@@ -21,7 +21,6 @@ function configureRuntime() {
   }
 
   const hasWebGPU = typeof navigator !== 'undefined' && 'gpu' in navigator;
-  console.log(hasWebGPU);
 
   if (hasWebGPU && env.backends.onnx.webgpu) {
     env.backends.onnx.preferredBackend = 'webgpu';
