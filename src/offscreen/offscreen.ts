@@ -9,7 +9,6 @@ chrome.runtime.onMessage.addListener((message: Message<string>, _, sendResponse)
 
   (async () => {
     const sentiment = await pipeline(message.content)
-    console.log('SENTIMENT:', sentiment)
     const response: Message<number> = {
       type: sentiment ? 'INFERENCE_RESPONSE' : 'INFERENCE_ERROR',
       content: sentiment ?? 0

@@ -48,7 +48,6 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
           type: 'NEWS_DOMAINS_LIST',
           content: await getNewsDomains()
         }
-        console.log(newsDomainsResponse);
         sendResponse(newsDomainsResponse);
       })();
       return true;

@@ -36,6 +36,5 @@ async function onContentUpdate(container: HTMLElement) {
   if (!(await isNewsFeed(domain)))
     return;
 
-  console.log('Is domain.');
   await analyseNewsFeed(container);
 }
