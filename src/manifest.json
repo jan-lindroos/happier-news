@@ -1,6 +1,6 @@
 {
-  "name": "Happier (News)",
-  "description": "Makes your news feed happier (and hopefully you) by making negative news less visible.",
+  "name": "Happier (news)",
+  "description": "Makes your news feed (and hopefully you) happier by making negative news less visible.",
   "version": "1.0",
   "manifest_version": 3,
   "action": {
