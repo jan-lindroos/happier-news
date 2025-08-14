@@ -11,7 +11,7 @@ export interface Message<T> {
 }
 
 export interface StorageOperation<T> {
-  method: 'set' | 'get' | 'add';
+  method: 'set' | 'get' | 'add' | 'remove';
   key: string;
   data: T;
 }

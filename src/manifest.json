@@ -17,7 +17,7 @@
       "css": ["style/headline-blur.css"]
     }
   ],
-  "permissions": ["offscreen", "storage"],
+  "permissions": ["offscreen", "storage", "tabs"],
   "cross_origin_opener_policy": { "value": "same-origin" },
   "cross_origin_embedder_policy": { "value": "require-corp" },
   "host_permissions": ["<all_urls>"],

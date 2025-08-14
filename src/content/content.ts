@@ -15,17 +15,19 @@ observer.observe(document.body, {
 });
 
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
-  if (message.type !== 'REFRESH')
+  console.log("Received: ", message.type);
+  if (message.type !== "REFRESH")
     return;
 
   (async () => {
-    await onContentUpdate(document.body);
+    await onUserRefresh();
     sendResponse();
   })();
   return true;
 });
 
 const CONTENT_UPDATE_DELAY = 100;
+const domain = window.location.hostname;
 let lastContentUpdate = Date.now();
 let updateLock = false;
 
@@ -39,16 +41,24 @@ async function onContentUpdate(container: HTMLElement) {
   if (isCooldownActive)
     await new Promise(r => setTimeout(r, CONTENT_UPDATE_DELAY - elapsedTime))
 
-  const domain = window.location.hostname;
-
   try {
-    if (await isNewsFeed(domain))
-        await analyseNewsFeed(isCooldownActive ? document.body : container);
+    if (await isNewsFeed(window.location.hostname))
+      await analyseNewsFeed(isCooldownActive ? document.body : container);
 
     lastContentUpdate = Date.now()
   } catch (error) {
     console.warn("Encountered following error while analysing feed:", error);
   } finally {
     updateLock = false;
+  }
+}
+
+async function onUserRefresh() {
+  document.querySelectorAll(".headline-blur").forEach(el => {
+    el.classList.remove("headline-blur");
+  });
+
+  if (await isNewsFeed(domain)) {
+    await onContentUpdate(document.body);
   }
 }

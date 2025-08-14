@@ -1,20 +1,19 @@
 <script lang="ts">
+  import SiteToggle from "$lib/SiteToggle.svelte";
+  import StrengthSlider from "$lib/StrengthSlider.svelte";
+  import { Badge } from "$lib/components/ui/badge";
+  import { ModeWatcher } from "mode-watcher";
 </script>
 
-<main>
-  <h1>Vite + Svelte</h1>
+<ModeWatcher />
+<main class="p-4 grid gap-4 text-left">
+  <div class="flex w-full justify-start items-center gap-3">
+    <h3 class="text-xl font-semibold tracking-tight">
+      Happier (news)
+    </h3>
+    <Badge variant="secondary">Beta</Badge>
+  </div>
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
+  <StrengthSlider />
+  <SiteToggle />
 </main>
-
-<style>
-  .read-the-docs {
-    color: #888;
-  }
-</style>

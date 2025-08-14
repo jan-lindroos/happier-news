@@ -17,6 +17,12 @@ export const storage = {
     const list = await storage.get<T[]>(key, []);
     list.push(item);
     return storage.set(key, list);
+  },
+
+  remove: async <T>(key: string, item: T) => {
+    const list: T[] = await storage.get<T[]>(key, []);
+    const filteredList = list.filter(listItem => listItem !== item);
+    return storage.set(key, filteredList);
   }
 };
 
@@ -29,4 +35,3 @@ export async function getNewsDomains() {
   await storage.set('NEWS_DOMAINS', PRELOADED_NEWS_DOMAINS);
   return PRELOADED_NEWS_DOMAINS;
 }
-

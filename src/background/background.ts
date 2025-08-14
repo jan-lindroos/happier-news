@@ -18,7 +18,22 @@ async function makeInferenceRequest(text: string): Promise<number | null> {
   }
 }
 
+async function sendToTabs<T>(message: Message<T>) {
+  const tabs = await chrome.tabs.query({});
+  for (const tab of tabs) {
+    if (!tab.id)
+      return;
+
+    try {
+      await chrome.tabs.sendMessage(tab.id, message);
+    } catch (error) {
+      console.log(`Could not send refresh to tab ${tab.id}:`, error);
+    }
+  }
+}
+
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
+  console.log("Received: ", message.type);
   switch (message.type) {
     case 'INFERENCE_REQUEST':
       (async () => {
@@ -42,6 +57,7 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
       })();
       return true;
 
+    // Storage does not handle this due to loading defaults on first fetch.
     case 'GET_NEWS_DOMAINS':
       (async () => {
         const newsDomainsResponse: Message<string[]> = {
@@ -49,6 +65,13 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
           content: await getNewsDomains()
         }
         sendResponse(newsDomainsResponse);
+      })();
+      return true;
+
+    case 'REFRESH':
+      (async () => {
+        await sendToTabs(message);
+        sendResponse();
       })();
       return true;
   }

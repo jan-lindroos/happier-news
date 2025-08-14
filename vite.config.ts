@@ -1,10 +1,12 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { resolve } from 'path'
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     svelte(),
     viteStaticCopy({
       targets: [
@@ -41,7 +43,7 @@ export default defineConfig({
         inference: resolve(__dirname, 'src/offscreen/offscreen.html'),
         background: resolve(__dirname, 'src/background/background.ts'),
         content: resolve(__dirname, 'src/content/content.ts'),
-        'style/headline-blur': resolve(__dirname, 'src/content/style/headline-blur.css'),
+        'style/headline-blur': resolve(__dirname, 'src/content/style/headline-blur.css')
       },
       output: {
         entryFileNames: '[name].js',
@@ -50,5 +52,10 @@ export default defineConfig({
       }
     }
   },
-  publicDir: false
-})
+  publicDir: false,
+  resolve: {
+    alias: {
+      $lib: resolve("src/popup/lib"),
+    },
+  },
+});
