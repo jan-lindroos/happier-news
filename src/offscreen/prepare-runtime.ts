@@ -6,7 +6,14 @@ import {
   PreTrainedTokenizer
 } from "@huggingface/transformers";
 
-function configureRuntime() {
+/**
+ * Configures the runtime environment for model execution.
+ * Adjusts caching settings, model source preferences, backend configurations,
+ * and sets the preferred backend for execution based on browser capabilities.
+ *
+ * @return {void} No return value.
+ */
+function configureRuntime(): void {
   env.useBrowserCache = false;
   env.allowLocalModels = true;
   env.allowRemoteModels = false;
@@ -29,7 +36,14 @@ function configureRuntime() {
   }
 }
 
-function createPipeline(tokeniser: PreTrainedTokenizer, model: PreTrainedModel) {
+/**
+ * Creates a pipeline for processing text using the provided tokeniser and model.
+ *
+ * @param {PreTrainedTokenizer} tokeniser - The tokeniser used to preprocess input text into tensors.
+ * @param {PreTrainedModel} model - The pre-trained model used to generate output logits from input tensors.
+ * @return {function(string): Promise<number|null>} An asynchronous function that takes a text input and returns a Promise resolving to a numerical result or null in case of an error.
+ */
+function createPipeline(tokeniser: PreTrainedTokenizer, model: PreTrainedModel): (arg0: string) => Promise<number | null> {
   const cache = new Map<string, number>();
   const inflight = new Map<string, Promise<number>>();
 
@@ -64,7 +78,13 @@ function createPipeline(tokeniser: PreTrainedTokenizer, model: PreTrainedModel) 
   }
 }
 
-export async function prepareRuntime() {
+/**
+ * Prepares and initialises the runtime environment by configuring it and loading any
+ * required resources such as the tokeniser and model for sequence classification.
+ *
+ * @return {Promise<Object>} A promise that resolves to the pipeline created using the loaded tokenizer and model.
+ */
+export async function prepareRuntime(): Promise<object> {
   configureRuntime();
 
   const base = chrome.runtime.getURL('models/minilm-l12-news/');

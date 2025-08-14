@@ -26,7 +26,13 @@ export const storage = {
   }
 };
 
-export async function getNewsDomains() {
+/**
+ * Fetches the list of news domains from the storage. If no domains are found in storage,
+ * it initialises the storage with a predefined set of news domains and returns it.
+ *
+ * @return {Promise<string[]>} A promise that resolves to an array of news domain strings.
+ */
+export async function getNewsDomains(): Promise<string[]> {
   const storedDomains: string[] = await storage.get<string[]>('NEWS_DOMAINS', []);
 
   if (storedDomains.length > 0)

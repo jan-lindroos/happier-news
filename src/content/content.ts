@@ -31,7 +31,14 @@ const domain = window.location.hostname;
 let lastContentUpdate = Date.now();
 let updateLock = false;
 
-async function onContentUpdate(container: HTMLElement) {
+/**
+ * Handles content updates within the specified container element. Ensures content processing
+ * respects a cooldown period and prevents simultaneous updates.
+ *
+ * @param {HTMLElement} container - The container element where the content update should be applied.
+ * @return {Promise<void>} A promise that resolves when the content update logic is completed.
+ */
+async function onContentUpdate(container: HTMLElement): Promise<void> {
   if (updateLock)
     return;
   updateLock = true;
@@ -53,7 +60,13 @@ async function onContentUpdate(container: HTMLElement) {
   }
 }
 
-async function onUserRefresh() {
+/**
+ * Handles refreshing the user's page by removing blur (in case less strict parameters are set) and
+ * triggering an update if the current page is identified as a news feed.
+ *
+ * @return {Promise<void>} A promise that resolves when all refresh operations have completed.
+ */
+async function onUserRefresh(): Promise<void> {
   document.querySelectorAll(".headline-blur").forEach(el => {
     el.classList.remove("headline-blur");
   });

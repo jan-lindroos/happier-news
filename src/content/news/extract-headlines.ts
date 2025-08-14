@@ -25,6 +25,12 @@ function shouldIncludeNode(node: Text): boolean {
   return isInWordCountRange && isInCharCountRange;
 }
 
+/**
+ * Attempts to sort an array of headlines vertically based on their vertical position in the document.
+ *
+ * @param {Headline[]} headlines - An array of headline objects, each containing a reference to an HTML element.
+ * @return {Headline[]} The sorted array of headlines arranged in ascending order of their vertical position.
+ */
 function sortHeadlinesVertically(headlines: Headline[]): Headline[] {
   return headlines.sort((a, b) => {
     const ay = a.element.getBoundingClientRect().top;

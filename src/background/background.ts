@@ -2,6 +2,12 @@ import { ensureOffscreenIsReady } from "./create-offscreen.ts";
 import type { Message, StorageOperation } from "./background.types.ts";
 import { getNewsDomains, storage } from "./storage.ts";
 
+/**
+ * Sends a message to perform an inference task with the given text and returns the inferred result.
+ *
+ * @param {string} text - The input text for the inference task.
+ * @return {Promise<number | null>} A promise that resolves to the inferred result as a number, or null if the request fails.
+ */
 async function makeInferenceRequest(text: string): Promise<number | null> {
   await ensureOffscreenIsReady();
 
@@ -18,7 +24,13 @@ async function makeInferenceRequest(text: string): Promise<number | null> {
   }
 }
 
-async function sendToTabs<T>(message: Message<T>) {
+/**
+ * Sends a specified message to all open browser tabs.
+ *
+ * @param {Message<T>} message - The message object to be sent to the tabs.
+ * @return {Promise<void>} A promise that resolves once the message has been sent to all eligible tabs, or rejects if an error occurs.
+ */
+async function sendToTabs<T>(message: Message<T>): Promise<void> {
   const tabs = await chrome.tabs.query({});
   for (const tab of tabs) {
     if (!tab.id)
