@@ -25,7 +25,6 @@
   }
 
   async function onValueCommit(newStrength: number) {
-
     const editRequest: Message<StorageOperation<number>> = {
       type: 'STORAGE',
       content: {
