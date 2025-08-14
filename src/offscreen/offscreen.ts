@@ -8,7 +8,8 @@ chrome.runtime.onMessage.addListener((message: Message<string>, _, sendResponse)
     return;
 
   (async () => {
-    const sentiment = await pipeline(message.content)
+    // @ts-ignore
+    const sentiment: number = await pipeline(message.content)
     const response: Message<number> = {
       type: sentiment ? 'INFERENCE_RESPONSE' : 'INFERENCE_ERROR',
       content: sentiment ?? 0
