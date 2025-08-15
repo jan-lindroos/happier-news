@@ -19,6 +19,10 @@ export default defineConfig({
           dest: ''
         },
         {
+          src: resolve(__dirname, 'src/icons/*'),
+          dest: 'icons'
+        },
+        {
           src: resolve(__dirname, 'ml/models/tokeniser/*'),
           dest: 'models/minilm-l12-news'
         },

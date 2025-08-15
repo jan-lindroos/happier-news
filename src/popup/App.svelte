@@ -9,7 +9,7 @@
 <main class="p-4 grid gap-4 text-left">
   <div class="flex w-full justify-start items-center gap-3">
     <h3 class="text-xl font-semibold tracking-tight">
-      Happier (news)
+      Happier (News)
     </h3>
     <Badge variant="secondary">Beta</Badge>
   </div>
