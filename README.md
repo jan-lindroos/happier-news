@@ -22,7 +22,7 @@ https://github.com/user-attachments/assets/7c377b64-ed9f-453d-bfa2-08099c2d0c3d
 
 The extension employs a MiniLM-L12-H384-uncased transformer model fine-tuned via the Hugging Face ecosystem for identifying upsetting news content. This BERT-based architecture balances classification accuracy with the size constraints of browser deployment, achieving comparable results to BERT-Base model on the SST-2 benchmark [[3]](https://huggingface.co/microsoft/MiniLM-L12-H384-uncased), which most closely resmbles its role here.
 
-Model inference utilises WebGPU acceleration when available, reducing processing latency during headline classification. A MutationObserver detects DOM changes to handle dynamically loaded content from infinite scroll, AJAX requests, and SPA navigation. Classification results are cached to prevent redundant processing of previously analysed headlines. Finally, Svelte is used for building out the UI elements of the extension
+Model inference utilises WebGPU acceleration when available, reducing processing latency during headline classification. A MutationObserver detects DOM changes to handle dynamically loaded content from infinite scroll, AJAX requests, and SPA navigation. Classification results are cached to prevent redundant processing of previously analysed headlines. Finally, Svelte is used for building out the UI elements of the extension.
 
 ## Credits
 
